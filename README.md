@@ -182,7 +182,7 @@ curl 'http://localhost:8080/departments/1?depth=2&include_employees=true'
 Update a department:
 
 ```bash
-curl -X PATCH http://localhost:8080/departments/1/update \
+curl -X PATCH http://localhost:8080/departments/1 \
   -H 'Content-Type: application/json' \
   -d '{"name":"Platform","parent_id":null}'
 ```
@@ -190,13 +190,13 @@ curl -X PATCH http://localhost:8080/departments/1/update \
 Delete a department with cascade mode:
 
 ```bash
-curl -X DELETE 'http://localhost:8080/departments/1/delete?mode=cascade'
+curl -X DELETE 'http://localhost:8080/departments/1?mode=cascade'
 ```
 
 Delete a department and reassign its employees:
 
 ```bash
-curl -X DELETE 'http://localhost:8080/departments/1/delete?mode=reassign&reassign_to_department_id=2'
+curl -X DELETE 'http://localhost:8080/departments/1?mode=reassign&reassign_to_department_id=2'
 ```
 
 Create an employee:

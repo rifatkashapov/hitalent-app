@@ -178,7 +178,7 @@ func TestUpdateDepartmentParsesNullableParent(t *testing.T) {
 		return req.Name != nil && *req.Name == "Platform" && req.ParentIDSet && req.ParentID == nil
 	})).Return(&model.Department{ID: 3, Name: "Platform"}, nil).Once()
 
-	req := httptest.NewRequest(http.MethodPatch, "/departments/3/update", bytes.NewBufferString(`{"name":"Platform","parent_id":null}`))
+	req := httptest.NewRequest(http.MethodPatch, "/departments/3", bytes.NewBufferString(`{"name":"Platform","parent_id":null}`))
 	req.SetPathValue("id", "3")
 	rec := httptest.NewRecorder()
 
@@ -196,7 +196,7 @@ func TestUpdateDepartmentMapsValidationError(t *testing.T) {
 		Return((*model.Department)(nil), customErr.ErrInvalidDepartmentName).
 		Once()
 
-	req := httptest.NewRequest(http.MethodPatch, "/departments/3/update", bytes.NewBufferString(`{"name":""}`))
+	req := httptest.NewRequest(http.MethodPatch, "/departments/3", bytes.NewBufferString(`{"name":""}`))
 	req.SetPathValue("id", "3")
 	rec := httptest.NewRecorder()
 
@@ -216,7 +216,7 @@ func TestDeleteDepartmentReassign(t *testing.T) {
 		ReassignToDepartmentID: &reassignID,
 	}).Return(nil).Once()
 
-	req := httptest.NewRequest(http.MethodDelete, "/departments/3/delete?mode=reassign&reassign_to_department_id=9", nil)
+	req := httptest.NewRequest(http.MethodDelete, "/departments/3?mode=reassign&reassign_to_department_id=9", nil)
 	req.SetPathValue("id", "3")
 	rec := httptest.NewRecorder()
 
@@ -234,7 +234,7 @@ func TestDeleteDepartmentMapsUnexpectedError(t *testing.T) {
 		Return(errors.New("db is down")).
 		Once()
 
-	req := httptest.NewRequest(http.MethodDelete, "/departments/3/delete", nil)
+	req := httptest.NewRequest(http.MethodDelete, "/departments/3", nil)
 	req.SetPathValue("id", "3")
 	rec := httptest.NewRecorder()
 

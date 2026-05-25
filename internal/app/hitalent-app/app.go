@@ -46,8 +46,8 @@ func Run() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("POST /departments", departmentsHandler.CreateDepartment)
 	mux.HandleFunc("GET /departments/{id}", departmentsHandler.GetDepartment)
-	mux.HandleFunc("PATCH /departments/{id}/update", departmentsHandler.UpdateDepartment)
-	mux.HandleFunc("DELETE /departments/{id}/delete", departmentsHandler.DeleteDepartment)
+	mux.HandleFunc("PATCH /departments/{id}", departmentsHandler.UpdateDepartment)
+	mux.HandleFunc("DELETE /departments/{id}", departmentsHandler.DeleteDepartment)
 	mux.HandleFunc("POST /departments/{id}/employees", employeeHandler.CreateEmployee)
 
 	addr := env("APP_ADDR", ":8080")
