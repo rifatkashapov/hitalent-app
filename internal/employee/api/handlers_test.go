@@ -28,7 +28,7 @@ func (m *employeeServiceMock) CreateEmployee(req model.CreateEmployeeRequest) (*
 
 func TestCreateEmployeeSuccess(t *testing.T) {
 	service := new(employeeServiceMock)
-	handler := NewDepartmentsHandler(service)
+	handler := NewEmployeeHandler(service)
 
 	hiredAt := time.Date(2026, 5, 25, 0, 0, 0, 0, time.UTC)
 	createdAt := time.Date(2026, 5, 25, 12, 0, 0, 0, time.UTC)
@@ -60,7 +60,7 @@ func TestCreateEmployeeSuccess(t *testing.T) {
 
 func TestCreateEmployeeInvalidDepartmentID(t *testing.T) {
 	service := new(employeeServiceMock)
-	handler := NewDepartmentsHandler(service)
+	handler := NewEmployeeHandler(service)
 
 	req := httptest.NewRequest(http.MethodPost, "/departments/not-a-number/employees", bytes.NewBufferString(`{"full_name":"Ada","position":"Engineer"}`))
 	req.SetPathValue("id", "not-a-number")
@@ -74,7 +74,7 @@ func TestCreateEmployeeInvalidDepartmentID(t *testing.T) {
 
 func TestCreateEmployeeDepartmentNotFound(t *testing.T) {
 	service := new(employeeServiceMock)
-	handler := NewDepartmentsHandler(service)
+	handler := NewEmployeeHandler(service)
 
 	service.On("CreateEmployee", model.CreateEmployeeRequest{
 		DepartmentID: 7,
@@ -95,7 +95,7 @@ func TestCreateEmployeeDepartmentNotFound(t *testing.T) {
 
 func TestCreateEmployeeValidationError(t *testing.T) {
 	service := new(employeeServiceMock)
-	handler := NewDepartmentsHandler(service)
+	handler := NewEmployeeHandler(service)
 
 	service.On("CreateEmployee", model.CreateEmployeeRequest{
 		DepartmentID: 7,
@@ -116,7 +116,7 @@ func TestCreateEmployeeValidationError(t *testing.T) {
 
 func TestCreateEmployeeUnexpectedError(t *testing.T) {
 	service := new(employeeServiceMock)
-	handler := NewDepartmentsHandler(service)
+	handler := NewEmployeeHandler(service)
 
 	service.On("CreateEmployee", mock.Anything).
 		Return((*model.Employee)(nil), errors.New("db is down")).

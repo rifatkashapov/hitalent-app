@@ -41,7 +41,7 @@ func Run() {
 	departmentsHandler := departmentapi.NewDepartmentsHandler(departmentService)
 
 	employeeService := employee.NewEmployeeService(db)
-	employeeHandler := employeeapi.NewDepartmentsHandler(employeeService)
+	employeeHandler := employeeapi.NewEmployeeHandler(employeeService)
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("POST /departments", departmentsHandler.CreateDepartment)

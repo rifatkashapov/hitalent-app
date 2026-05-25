@@ -14,7 +14,7 @@ type EmployeeHandler struct {
 	service employee.EmployeeService
 }
 
-func NewDepartmentsHandler(service employee.EmployeeService) *EmployeeHandler {
+func NewEmployeeHandler(service employee.EmployeeService) *EmployeeHandler {
 	return &EmployeeHandler{service: service}
 }
 
