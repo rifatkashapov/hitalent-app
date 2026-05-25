@@ -1,0 +1,75 @@
+name: hitalent-app
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: "hitalent-app"
+    environment:
+      APP_ADDR: ":8080"
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: ${POSTGRES_USER:-postgres}
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      DB_NAME: ${POSTGRES_DB:-hitalent}
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    networks:
+      - hitalent-network
+
+  migrate:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: migrate
+    container_name: "hitalent-migrate"
+    command:
+      - goose
+      - postgres
+      - host=db port=5432 user=${POSTGRES_USER:-postgres} password=${POSTGRES_PASSWORD:-postgres} dbname=${POSTGRES_DB:-hitalent} sslmode=disable
+      - -dir
+      - /migrations
+      - -table
+      - ${GOOSE_TABLE:-public.schema_migrations}
+      - up
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./internal/db/migrations:/migrations:ro
+    networks:
+      - hitalent-network
+    restart: "no"
+
+  db:
+    image: "postgres:16-alpine"
+    container_name: "hitalent-db"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-hitalent}
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - hitalent-network
+
+networks:
+  hitalent-network:
+    driver: bridge
+
+volumes:
+  db-data:
